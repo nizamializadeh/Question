@@ -30,9 +30,53 @@ class QuestionPage extends StatefulWidget {
 }
 
 class _QuestionPageState extends State<QuestionPage> {
-  List<Widget> choose = [];
-
   Quiz quiz_1 = Quiz();
+  void buttonFunc(bool choosButton) {
+    if (quiz_1.getEndQuestion() == true) {
+      showDialog<void>(
+        context: context,
+        barrierDismissible: false, // user must tap button!
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text('Complite Question'),
+            content: SingleChildScrollView(
+              child: ListBody(
+                children: <Widget>[
+                  Text("Correct Answers"),
+                  Text(quiz_1.getTrueAnswers()),
+                  Text("False Answers"),
+                  Text(quiz_1.getFalseAnswers())
+                  // Text('Would you like to approve of this message?'),
+                ],
+              ),
+            ),
+            actions: <Widget>[
+              TextButton(
+                child: const Text('Again'),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                  setState(() {
+                    quiz_1.getResetQuestion();
+                  });
+                },
+              ),
+            ],
+          );
+        },
+      );
+    } else {
+      setState(() {
+        if (quiz_1.getQuestionAnswer() == choosButton) {
+          quiz_1.choose.add(KfalseIcon);
+          quiz_1.getFalsePlus();
+        } else {
+          quiz_1.choose.add(KtrueIcon);
+          quiz_1.getCorrectPlus();
+        }
+        quiz_1.getNextQuestion();
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -52,7 +96,7 @@ class _QuestionPageState extends State<QuestionPage> {
           alignment: WrapAlignment.center,
           spacing: 4,
           runSpacing: 5,
-          children: choose,
+          children: quiz_1.choose,
         ),
         Expanded(
           flex: 1,
@@ -64,12 +108,7 @@ class _QuestionPageState extends State<QuestionPage> {
                   child: RaisedButton(
                     padding: EdgeInsets.all(12),
                     onPressed: () {
-                      setState(() {
-                        quiz_1.getQuestionAnswer()
-                            ? choose.add(KfalseIcon)
-                            : choose.add(KtrueIcon);
-                        quiz_1.getNextQuestion();
-                      });
+                      buttonFunc(true);
                     },
                     color: Colors.red[400],
                     child: Icon(Icons.thumb_down),
@@ -82,12 +121,7 @@ class _QuestionPageState extends State<QuestionPage> {
                   padding: const EdgeInsets.symmetric(horizontal: 8.0),
                   child: RaisedButton(
                     onPressed: () {
-                      setState(() {
-                        quiz_1.getQuestionAnswer()
-                            ? choose.add(KtrueIcon)
-                            : choose.add(KfalseIcon);
-                        quiz_1.getNextQuestion();
-                      });
+                      buttonFunc(false);
                     },
                     padding: EdgeInsets.all(12),
                     color: Colors.green[400],

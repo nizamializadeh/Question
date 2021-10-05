@@ -1,7 +1,11 @@
+import 'package:flutter/material.dart';
 import 'package:question/Question.dart';
 
 class Quiz {
   int _questionIndex = 0;
+  int _trueAnswer = 0;
+  int _falseAnswer = 0;
+  List<Widget> choose = [];
 
   List _question = [
     Question(
@@ -33,6 +37,43 @@ class Quiz {
   }
 
   void getNextQuestion() {
-    _question.length - 1 > _questionIndex ? _questionIndex++ : _questionIndex;
+    if (_question.length - 1 > _questionIndex) {
+      _questionIndex++;
+    } else {
+      for (int i = 0; i < choose.length; i++) {}
+      _questionIndex = 0;
+      choose = [];
+    }
+  }
+
+  bool getEndQuestion() {
+    if (_question.length - 1 <= _questionIndex) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  String getTrueAnswers() {
+    return _trueAnswer.toString();
+  }
+
+  String getFalseAnswers() {
+    return _falseAnswer.toString();
+  }
+
+  void getResetQuestion() {
+    _questionIndex = 0;
+    choose = [];
+    _trueAnswer = 0;
+    _falseAnswer = 0;
+  }
+
+  void getCorrectPlus() {
+    _trueAnswer++;
+  }
+
+  void getFalsePlus() {
+    _falseAnswer++;
   }
 }
